@@ -1,0 +1,108 @@
+USP rows: 145   HSM rows: 819
+Matched: 95   Unmatched: 41   Excluded as ambiguous: 9
+
+  ambiguous: BETASIL C18 -> ['Betasil C18', 'Betasil C18'] [exact-normalised]
+  ambiguous: Delta-Pak C18 100A -> ['DeltaPak C18 100A', 'DeltaPak C18 300A'] [spaceless]
+  ambiguous: Genesis C18 -> ['Genesis C18 120A', 'Genesis C18 300A'] [exact-normalised]
+  ambiguous: Hypersil ODS -> ['Hypersil ODS', 'Hypersil   ODS'] [exact-normalised]
+  ambiguous: Zorbax StableBond C18 -> ['Zorbax StableBond 300A C18', 'Zorbax StableBond 80A C18'] [exact-normalised]
+  ambiguous: PurospherSTAR RP-18e 3 µm -> ['Purospher STAR RP18e'] [spaceless-collision]
+  ambiguous: PurospherSTAR RP-18e 5 µm -> ['Purospher STAR RP18e'] [spaceless-collision]
+  ambiguous: TSKgel ODS-100V 3 μm -> ['TSKgel ODS-100V'] [exact-normalised-collision]
+  ambiguous: TSKgel ODS-100V 5 μm -> ['TSKgel ODS-100V'] [exact-normalised-collision]
+
+ USP  HSM    n  pearson        p  spearman        p
+  Hy  C28   94   -0.199   0.0564    -0.314   0.0025
+  Hy  C70   94   -0.330   0.0009    -0.373   0.0003
+ CTF  C28   89    0.286   0.0175     0.236   0.0258
+ CTF  C70   89    0.224   0.0351     0.374   0.0004
+ CFA  C28   90    0.456   0.0003     0.178   0.0924
+ CFA  C70   90    0.613   0.0000     0.229   0.0279
+ TFA  C28   94    0.562   0.0000     0.350   0.0006
+ TFA  C70   94    0.494   0.0000     0.393   0.0002
+  BD  C28   93    0.042   0.6887    -0.063   0.5508
+  BD  C70   93   -0.182   0.0830    -0.251   0.0169
+
+(HSM-internal, matched subset) C28 vs C70: n=95 pearson=0.685 spearman=0.544
+
+Highest HSM C(7.0) in the matched set:
+  [USP CFA/TFA values for these rows redacted from the public copy; rerun
+   join_usp_hsm.py with your own USP extract to regenerate them]
+  Resolve C18                      C70=  2.14  C28=  1.92
+  Supelcosil LC-18                 C70=  1.75  C28=  1.59
+  Hypersil PAH                     C70=  1.72  C28=  1.43
+  Platinum EPS C18                 C70=   1.7  C28=  0.68
+  Spherisorb ODS-1                 C70=  1.29  C28=  0.84
+  Spherisorb ODS-2                 C70=  1.26  C28=   0.9
+
+With those six removed:
+   CFA  C28 n=84   pearson=  0.121 spearman=  0.047
+   CFA  C70 n=84   pearson=  0.443 spearman=  0.101
+   TFA  C28 n=88   pearson=  0.310 spearman=  0.252
+   TFA  C70 n=88   pearson=  0.247 spearman=  0.303
+    Hy  C28 n=88   pearson= -0.161 spearman= -0.275
+    Hy  C70 n=88   pearson= -0.318 spearman= -0.342
+
+#30 sweep pair in HSM:
+  XBridge Shield RP18 (Waters): H=0.83 C28=-0.12 C70=-0.05
+  Betasil C18 (Thermo/Hypersil): H=1.05 C28=-0.03 C70=-0.04
+  Betasil C18 (Thermo/Hypersil): H=1.063 C28=0.095 C70=0.099
+
+HSM C(7.0) by silica type, whole 819-row set:
+  type B        n=516  median=  0.207  min= -0.995 max=  7.51
+  type A        n=75   median=  1.050  min=  0.150 max=  2.69
+  type phenyl   n=72   median=  0.486  min= -0.260 max=  1.51
+  type EP       n=68   median=  0.260  min= -1.100 max=  1.64
+  type CN       n=41   median=  0.780  min= -1.290 max=  1.32
+  type F        n=21   median=  1.144  min=  0.150 max=  1.84
+  type other    n=8    median=  1.210  min=  0.130 max=  2.18
+  type fluoro   n=8    median=  1.360  min=  0.741 max=  2.66
+  type Other    n=6    median=  1.547  min= -1.357 max=  2.60
+  type C18      n=2    median=  0.088  min=  0.009 max=  0.09
+  type C28      n=2    median=  0.098  min=  0.095 max=  0.10
+
+Best C(7.0)-contrasting pairs at matched hydrophobicity (|ΔH| ≤ 0.05), silica C18 only:
+  ΔC70= 3.18  Ace 5 C18-PFP (C70=-0.995, H=0.899, type B)  vs  Cogent hQ C18 (C70=2.18, H=0.9, type B)  
+  ΔC70= 3.02  Inertsil ODS-3 (C70=-0.33, H=0.99, type B)  vs  Apex II C18 (C70=2.69, H=1, type A)  
+  ΔC70= 2.97  Nucleodur POLARTEC C18 (C70=-0.787, H=0.858, type B)  vs  Cogent hQ C18 (C70=2.18, H=0.9, type B)  
+  ΔC70= 2.88  InertSustain C18 (C70=-0.195, H=1.01, type B)  vs  Apex II C18 (C70=2.69, H=1, type A)  
+  ΔC70= 2.86  Durashell C18 (C70=-0.174, H=1.042, type B)  vs  Apex II C18 (C70=2.69, H=1, type A)  
+  ΔC70= 2.86  Luna C18(2) (C70=-0.17, H=1, type B)  vs  Apex II C18 (C70=2.69, H=1, type A)  
+  ΔC70= 2.85  TSKgel ODS-100Z (C70=-0.16, H=1.03, type B)  vs  Apex II C18 (C70=2.69, H=1, type A)  
+  ΔC70= 2.82  Prodigy ODS(3) (C70=-0.13, H=1.02, type B)  vs  Apex II C18 (C70=2.69, H=1, type A)  
+
+WSU-2019 columns by HSM C(7.0) — the anchor set's silanol coverage:
+  Kinetex F5                     C70=   2.66  C28=   0.11  H= 0.725  type fluoro
+  Discovery HS F5                C70=   1.42  C28=   0.91  H=  0.67  type F
+  Fluophase-RP                   C70=   1.41  C28=   1.03  H=  0.69  type F
+  Kinetex Biphenyl               C70=  0.817  C28=  0.122  H= 0.697  type phenyl
+  Synergi Polar-RP               C70=   0.77  C28=   0.05  H=  0.65  type EP
+  Synergi Fusion-RP              C70=   0.36  C28=  -0.23  H=  0.87  type EP
+  Kinetex XB-C18                 C70=    0.3  C28=  -0.04  H=  0.97  type B
+  Synergi Hydro-RP               C70=   0.26  C28=  -0.07  H=  1.02  type EP
+  Kinetex Phenyl-Hexyl           C70=  0.236  C28=  0.062  H= 0.795  type phenyl
+  XBridge Phenyl                 C70=    0.2  C28=   0.19  H=  0.73  type phenyl
+  HyPURITY C18                   C70=   0.16  C28=   0.19  H=  0.98  type B
+  XBridge C18                    C70=   0.13  C28=   0.17  H=     1  type B
+  Kinetex C18                    C70=   0.12  C28=      0  H=  0.96  type B
+  Betasil C18                    C70=  0.099  C28=  0.095  H= 1.063  type B
+  XBridge C8                     C70=   0.06  C28=   0.12  H=   0.8  type B
+  XTerra MS C18                  C70=   0.05  C28=   0.13  H=  0.98  type B
+  XTerra Phenyl                  C70=   0.02  C28=   0.11  H=  0.68  type phenyl
+  Luna Omega PS C18              C70=  0.013  C28=  -0.29  H= 0.901  type EP
+  Kinetex C8                     C70=      0  C28=  -0.08  H=  0.86  type B
+  Kinetex EVO C18                C70=  -0.01  C28=  -0.11  H= 1.008  type B
+  Betasil C18                    C70=  -0.04  C28=  -0.03  H=  1.05  type B
+  XBridge Shield RP18            C70=  -0.05  C28=  -0.12  H=  0.83  type EP
+  Ascentis C18                   C70=  -0.08  C28=  -0.08  H=  1.07  type B
+  SunFire C18                    C70=  -0.09  C28=  -0.18  H=  1.03  type B
+  not in HSM (2): Chromolith Performance RP-18e, Discovery HS C18
+
+  type-A (high-activity silica) columns in WSU-2019: 0
+  WSU-2019 C18 columns span C70 -0.09 to 0.30 (HSM silica-C18 range: -1.00 to 2.69)
+  Best WSU-internal C18 pair at |ΔH| ≤ 0.1: ΔC70=0.39  Kinetex XB-C18 (C70=0.3) vs SunFire C18 (C70=-0.09)
+
+WSU-2019 Table S-1 electrostatic flags vs HSM C(7.0):
+  all phases   weak n=6 mean C70=+0.176   unqualified n=15 mean C70=+0.435
+  C18 only     weak n=4 mean C70=+0.072   unqualified n=5 mean C70=+0.050
+  -> separation across all phases is carried by the fluorinated columns; among C18 the flags do not rank at all

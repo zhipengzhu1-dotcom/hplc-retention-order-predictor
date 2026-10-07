@@ -1,0 +1,46 @@
+Anchor set: 94 WSU compounds (median V 1.06)
+
+modifier      phi  cols  pairs  pearson  spearman
+methanol       30    21    210    0.584     0.482
+methanol       40    21    210    0.477     0.468
+methanol       50    21    210    0.479     0.455
+acetonitrile   30    20    190    0.271     0.420
+acetonitrile   40    20    190    0.282     0.447
+acetonitrile   50    20    190    0.302     0.431
+
+CALIBRATION - substitution error in log k, by `Fs` band
+  (pooled over conditions; error = RMS dlog k over the 94 anchor compounds)
+  Fs band       pairs   median  90th pct     max
+  0-5              18    0.109     0.152   0.171
+  5-10            132    0.120     0.239   0.311
+  10-20           411    0.151     0.301   0.651
+  20-40           405    0.228     0.390   0.495
+  40+             234    0.266     0.467   0.761
+  ALL            1200    0.195     0.368   0.761
+
+  Compare: LSER lack-of-fit floor is 0.030 (ACN) / 0.041 (MeOH) log k.
+  Even the closest band sits an order of magnitude above that floor.
+
+ELUTION-ORDER cost of substituting on `Fs`
+  (fraction of the 4,371 compound pairs whose predicted order flips,
+   and how much a CLOSE pair's separation moves)
+  Fs band       pairs  median flip  90th pct  med |dsep| close
+  0-5              18        0.9%      2.0%             0.016
+  5-10            132        1.5%      3.0%             0.025
+  10-20           411        1.9%      4.1%             0.034
+  20-40           405        2.3%      4.3%             0.036
+  40+             234        4.7%     10.6%             0.082
+  ALL            1200        2.3%      5.7%             0.039
+
+  Budgeted cost of topology-class substitution (CONTEXT.md): 0.007-0.018
+  on a close pair's separation. Compare the last column.
+
+If you pick the `Fs`-NEAREST column, how often is it the
+LSER-nearest - i.e. the one that actually predicts retention best?
+  condition             cols   Fs-nearest = best  in best 3  median rank
+  methanol 30%            21                2/21       7/21            7
+  methanol 40%            21                3/21       8/21            5
+  methanol 50%            21                2/21       6/21            5
+  acetonitrile 30%        20                1/20       6/20            6
+  acetonitrile 40%        20                2/20       8/20            4
+  acetonitrile 50%        20                3/20       9/20            4

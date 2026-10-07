@@ -1,0 +1,10 @@
+vendor,instrument,pump,dwell_ul,dwell_note,extra_column_ul,extra_column_note,flow_cell_ul,source
+Waters,Acquity,binary,73,,5,,0.5,waters-720005723
+Waters,Acquity H-Class,quaternary,375,,7,,1,waters-720005723
+Waters,ARC HPLC,,,"1190 or 770 — two configurations, which is which not stated",,"<=30, one reading suggests 19",10,waters-720005723
+Waters,Alliance 2695,,1150,,,"30-34",10,waters-720005723
+Agilent,1100,,1100,,30,,13,unsourced
+Agilent,1200,,,"not recorded",30,,13,unsourced
+Agilent,1260,,1100,,,"not recorded","8 or 13",unsourced
+Agilent,1290 Infinity II HPLC,quaternary,900,"with mixer; without-mixer value not recorded",,"not recorded","1 or 4",unsourced
+Agilent,1290 Infinity II UHPLC,,,"with/without mixer both not recorded",,"not recorded","1 or 4",unsourced

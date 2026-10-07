@@ -1,0 +1,56 @@
+# Source papers — copyrighted PDFs, kept locally, referenced in sources/README.md
+*.pdf
+*.docx
+
+# papers/ holds one folder per article. Nothing in it is tracked except the
+# per-folder README — not the PDFs, and not text or tables extracted from them
+# (e.g. supple.txt). Extracted *data* goes to sources/ with a provenance README.
+papers/**
+!papers/*/
+!papers/**/README.md
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/ionisation-venv/
+env/qspr-venv/
+.ipynb_checkpoints/
+
+# QSPR env working dirs — pinned upstream clone and the 1.9 GB Zenodo model bundle.
+# Both are recreated by env/install_qspr.sh; neither belongs in git.
+env/_src/
+env/_download/
+
+# OS
+.DS_Store
+~$*
+
+# Claude Code session state and agent worktrees
+.claude/
+
+# RepoRT bulk data (clone it yourself and pin the commit in data/report/loader.py --
+# see data/report/README.md). Never commit the clone itself here.
+data/report/RepoRT/
+data/report/**/RepoRT/
+data/report/**/processed_data/
+data/report/**/*.rtdata.tsv
+
+# Local model venv (recreate: python3 -m venv env/model-venv &&
+#   env/model-venv/bin/pip install numpy scipy rdkit)
+env/model-venv/
+
+# Provider inference cache (regenerate by rerunning; ~7k entries)
+model/.ionisation-cache.json
+
+# Third-party data that is not redistributed. Build it locally (see each folder's
+# README) and keep it out of git.
+sources/usp-column-db/*.csv
+sources/usp-column-db/*.xlsx
+sources/wsu-lser/*.csv
+experiments/usp-hsm-join/matched.csv
+prototype/soluteml-bias/residuals.csv
+
+# Agent tooling
+.agents/

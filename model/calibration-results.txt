@@ -1,0 +1,71 @@
+Provider: Uni-pKa (simple SMARTS). 9 ionisable compounds with cited literature pKa.
+
+1. PROVIDER ERROR against the cited values the slice hardcodes
+   compound                         lit pKa           Uni-pKa           error
+   Benzoic acid                       [4.2]            [4.04]         [-0.16]
+   Ibuprofen                         [4.45]            [4.34]         [-0.11]
+   Naproxen                          [4.18]            [4.22]          [0.04]
+   Ketoprofen                         [4.2]            [4.06]         [-0.14]
+   Lidocaine                         [7.95]            [7.96]          [0.01]
+   Propranolol                       [9.42]             [9.5]          [0.08]
+   Atenolol                          [9.54]            [9.68]          [0.14]
+   Imipramine                         [9.4]            [9.78]          [0.38]
+   4-Aminobenzoic acid         [2.38, 4.85]      [2.34, 4.68]  [-0.04, -0.17]
+
+   n=10 pKa values | mean +0.003 | SD 0.170 | MAE 0.127 | max|e| 0.38
+   Slice assumes a per-compound pKa error of +-0.35 (1 SD).
+
+2. REFUSAL TIER - derived, not hand-labelled
+   compound                 slice label      derived  max f_neutral  at pH
+   Benzamide                    neutral  in_envelope         1.0000    0.0
+   Caffeine                     neutral  in_envelope         1.0000   14.0
+   Acetophenone                 neutral  in_envelope         1.0000    0.0
+   Methylparaben                neutral  in_envelope         1.0000    0.0
+   Toluene                      neutral  in_envelope         1.0000    0.0
+   Naphthalene                  neutral  in_envelope         1.0000    0.0
+   Benzoic acid                    acid  in_envelope         0.9999    0.0
+   Ibuprofen                       acid  in_envelope         1.0000    0.0
+   Naproxen                        acid  in_envelope         0.9999    0.0
+   Ketoprofen                      acid  in_envelope         0.9999    0.0
+   Lidocaine                       base  in_envelope         1.0000   14.0
+   Propranolol                     base  in_envelope         1.0000   14.0
+   Atenolol                        base  in_envelope         1.0000   14.0
+   Imipramine                      base  in_envelope         0.9999   14.0
+   4-Aminobenzoic acid            ampho  in_envelope         0.8819    3.5
+   Benzyltrimethylammonium      refused       refuse         0.0000   None
+
+   refusal agreement: 16/16
+
+3. f_neutral - real microspecies vs the slice's closed form
+   compound                  pH   sigmoid  provider     diff
+   Benzoic acid             3.0    0.9406    0.9158  -0.0248
+   Benzoic acid             5.0    0.1368    0.0981  -0.0387
+   Benzoic acid             7.0    0.0016    0.0011  -0.0005
+   Ibuprofen                3.0    0.9657    0.9548  -0.0109
+   Ibuprofen                5.0    0.2199    0.1745  -0.0453
+   Ibuprofen                7.0    0.0028    0.0021  -0.0007
+   Naproxen                 3.0    0.9380    0.9425   0.0044
+   Naproxen                 5.0    0.1315    0.1407   0.0093
+   Naproxen                 7.0    0.0015    0.0016   0.0001
+   Ketoprofen               3.0    0.9406    0.9167  -0.0239
+   Ketoprofen               5.0    0.1368    0.0992  -0.0377
+   Ketoprofen               7.0    0.0016    0.0011  -0.0005
+   Lidocaine                3.0    0.0000    0.0000  -0.0000
+   Lidocaine                5.0    0.0011    0.0011  -0.0000
+   Lidocaine                7.0    0.1009    0.0996  -0.0013
+   Propranolol              3.0    0.0000    0.0000  -0.0000
+   Propranolol              5.0    0.0000    0.0000  -0.0000
+   Propranolol              7.0    0.0038    0.0033  -0.0005
+   Atenolol                 3.0    0.0000    0.0000  -0.0000
+   Atenolol                 5.0    0.0000    0.0000  -0.0000
+   Atenolol                 7.0    0.0029    0.0022  -0.0007
+   Imipramine               3.0    0.0000    0.0000  -0.0000
+   Imipramine               5.0    0.0000    0.0000  -0.0000
+   Imipramine               7.0    0.0040    0.0017  -0.0023
+   4-Aminobenzoic acid      3.0    0.7974    0.8108   0.0134
+   4-Aminobenzoic acid      5.0    0.4141    0.3210  -0.0931
+   4-Aminobenzoic acid      7.0    0.0070    0.0047  -0.0023
+
+   n=27 | mean -0.0095 | max|diff| 0.0931
+   A large diff means the hardcoded pKa and the closed form together
+   misstate the neutral fraction that multiplies through to k.

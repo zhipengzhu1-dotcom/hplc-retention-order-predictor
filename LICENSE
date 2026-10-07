@@ -1,0 +1,46 @@
+MIT License
+
+Copyright (c) 2026 Zhipeng Zhu
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-------------------------------------------------------------------------------
+Third-party data in this repository is NOT covered by the MIT License above.
+
+sources/hsm-column-db/database.csv
+    PQRI / hydrophobic-subtraction model column database, retrieved from
+    https://hplccolumns.org/database/database.csv. Licensed under Creative
+    Commons Attribution-NonCommercial-ShareAlike 3.0 United States
+    (CC BY-NC-SA 3.0 US), https://creativecommons.org/licenses/by-nc-sa/3.0/us/.
+    Commercial use of that file needs separate permission from its maintainers.
+    See sources/hsm-column-db/README.md.
+
+prototype/soluteml-bias/overlap.csv
+    Contains descriptor values from SoluteDB (Chung et al. 2022, Zenodo record
+    5792296), licensed CC BY 4.0.
+
+experiments/solutedb-census/census.csv
+    Lists RepoRT compounds (InChIKey, SMILES) with a tier computed against
+    SoluteDB. RepoRT is licensed CC BY-SA 4.0
+    (https://github.com/michaelwitting/RepoRT), so this file is shared under
+    CC BY-SA 4.0. See data/report/README.md.
+
+The USP Column Equivalency data and the WSU-2019 (Poole 2019, Elsevier) tables
+used during development are not included. See sources/usp-column-db/README.md
+and sources/wsu-lser/README.md for how to obtain them.

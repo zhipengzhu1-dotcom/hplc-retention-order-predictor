@@ -1,0 +1,31 @@
+Seeking 15 thin-slice compounds across 421 datasets
+205 datasets contain at least one
+
+Top overlap:
+  ds    n   mode     pH     T    column
+  0415  10  grad     -      40   Agilent ZORBAX Eclipse Plus C18
+  0263  9   grad     0      50   Waters ACQUITY UPLC BEH C18
+  0382  9   grad     3.61   30   Thermo Scientific Acclaim RSLC 120 C18
+  0383  9   grad     6.2    30   Thermo Scientific Acclaim RSLC 120 C18
+  0262  8   grad     0      50   Waters ACQUITY UPLC BEH C18
+  0436  8   grad     -      30   Thermo Scientific Acclaim RSLC 120 C18
+  0019  7   grad     3      30   Waters XBridge C18
+  0391  7   grad     2.6    40   Waters ACQUITY UPLC BEH C18
+
+1. Elution mode over overlapping datasets: {'grad': 196, 'unknown': 9}
+   ISOCRATIC datasets with any slice compound: 0
+
+2. Dwell/system-volume fields in the RepoRT schema: NONE
+
+3. column.t0 across 421 datasets: 47 distinct values
+     t0='0.55125'    84 datasets
+     t0='0'          48 datasets
+     t0='1.1025'     47 datasets
+     t0='0.441'      42 datasets
+     t0='2.205'      36 datasets
+     t0 == 0 (impossible; missing-value marker): 48 datasets
+
+4. Duplicate-RT check on the Aalizadeh sets (0382/0383 look like a pH pair):
+     0382 vs 0383:  1673 shared,  1520 identical RT ( 91%)
+     0384 vs 0385:    83 shared,     0 identical RT (  0%)
+     0385 vs 0386:    83 shared,     2 identical RT (  2%)

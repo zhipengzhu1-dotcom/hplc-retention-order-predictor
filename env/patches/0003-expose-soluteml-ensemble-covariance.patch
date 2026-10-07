@@ -1,0 +1,73 @@
+diff --git a/chemprop_solvation/solvation_estimator.py b/chemprop_solvation/solvation_estimator.py
+index f0edb7f..5eaef4f 100644
+--- a/chemprop_solvation/solvation_estimator.py
++++ b/chemprop_solvation/solvation_estimator.py
+@@ -7,6 +7,13 @@ from chemprop_solvation.train.predict import predict
+ from chemprop_solvation.utils import load_args, load_checkpoint, load_scalers
+ from chemprop_solvation.data import MoleculeDatapoint, MoleculeDataset
+ 
++# The SoluteML head emits five targets in this order.
++SOLUTE_TARGETS = ('E', 'S', 'A', 'B', 'L')
++# The four that the RPLC form of the LSER equation consumes. V is computed exactly by
++# McGowan's method and carries no model error; L appears only in the GC form. The exposed
++# covariance is over these four only -- no fifth target is built or reported.
++RPLC_SOLUTE_TARGETS = ('E', 'S', 'A', 'B')
++
+ 
+ def load_ML_estimator(model_dir: str, fold_count: int = 5, model_count: int = 5) -> Callable[[List], Tuple[List, List, List]]:
+     """
+@@ -40,7 +47,7 @@ def load_ML_estimator(model_dir: str, fold_count: int = 5, model_count: int = 5)
+                                         'models': models}
+ 
+     # Set up estimator
+-    def estimator(smiles: list(list()) = None):
++    def estimator(smiles: list(list()) = None, return_ensemble: bool = False):
+         """
+         Type 1. train_args.solvation == True:
+             Computes the desired solvation property using the DirectML model.
+@@ -54,9 +61,24 @@ def load_ML_estimator(model_dir: str, fold_count: int = 5, model_count: int = 5)
+             e.g. smiles = [[solute1], [solute2]], .. ]
+ 
+         :param smiles: a list of a list or tuple containing either solvent and solute smiles or just solute smiles.
++        :param return_ensemble: if True, additionally return the raw per-ensemble-member
++            predictions and the cross-target covariance matrices (see below).
+         :return avg_pre: average predictions for the given SMILES.
+         :return epi_unc: variance on prediction (=epistemic or model uncertainty)
+         :return valid_indices: a list of valid SMILES indices that could be used for the prediction.
++        :return member_preds: (only if return_ensemble) np.ndarray of shape
++            (fold_count * model_count, n_valid, n_targets) holding every individual ensemble
++            member's prediction. Summary statistics discard the information needed to measure
++            across-compound residual correlation; this keeps it.
++        :return cov: (only if return_ensemble) np.ndarray of shape (n_valid, k, k), the
++            ensemble covariance across targets for each compound. For the SoluteML model k = 4
++            and the axes are (E, S, A, B) -- L is deliberately excluded, see RPLC_SOLUTE_TARGETS.
++            For the single-target DirectML models k = 1. ddof=0, so cov[i].diagonal() equals
++            epi_unc[i] exactly.
++
++        NOTE ON CALIBRATION: epi_unc and cov are ENSEMBLE SPREAD ONLY. They are epistemic,
++        carry no aleatoric term, and are not calibrated. Do not consume them as predictive
++        variances without a separate recalibration step.
+         """
+         # Load the train argument. It's same for all folds, so use the first model of the first fold.
+         train_args = load_args(os.path.join(fold_path[0], 'model_0', 'model.pt'), from_package=True)
+@@ -121,7 +143,19 @@ def load_ML_estimator(model_dir: str, fold_count: int = 5, model_count: int = 5)
+                 epi_unc.append(epi_unc_per_data)
+                 avg_pre.append(ave_pre_per_data)
+ 
+-        return avg_pre, epi_unc, valid_indices
++        if not return_ensemble:
++            return avg_pre, epi_unc, valid_indices
++
++        # Cross-target ensemble covariance, computed from the same tensor the variance above
++        # summarises. For SoluteML keep only the RPLC targets (E, S, A, B); L is dropped.
++        member_preds = all_preds if all_preds.ndim == 3 else all_preds[:, :, None]
++        if not train_args.solvation:
++            member_preds = member_preds[:, :, :len(RPLC_SOLUTE_TARGETS)]
++        # ddof=0 to match np.var above, so cov[i].diagonal() == epi_unc[i] for the kept targets.
++        cov = np.stack([np.cov(member_preds[:, i, :], rowvar=False, ddof=0).reshape(
++            member_preds.shape[2], member_preds.shape[2]) for i in range(len(valid_indices))])
++
++        return avg_pre, epi_unc, valid_indices, member_preds, cov
+ 
+     return estimator
+ 

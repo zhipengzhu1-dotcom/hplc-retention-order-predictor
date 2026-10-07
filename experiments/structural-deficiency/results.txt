@@ -1,0 +1,26 @@
+94 compounds with measured descriptors, SMILES and 25 folds
+
+Per-class test. RATIO = class median / non-class median.
+
+  class                        n     S resid   S spread   A resid   A spread
+  intramolecular H-bond        2   (too few to test)
+  hindered H-bond donor        1   (too few to test)
+  H-bond acid (any donor)     43        1.62       1.22      3.01       2.70
+  bulky (V > 1.4, proxy)      11        0.66       0.88      0.78       0.55
+  dipolarity mixture           8        3.00       1.55      3.88       1.81
+
+  Reading a row: residual ratio > 1 with spread ratio ~ 1 is the
+  register's signature - wrong, and the ensemble does not know it.
+  Both > 1 is ordinary predictor uncertainty, which #42 already handles
+  and which needs no register.
+
+Verdict per class (resid ratio / spread ratio - how far the ensemble
+under-signals its own error):
+  class                            S       A   reading
+  H-bond acid (any donor)       1.32    1.11   mild under-signal
+  bulky (V > 1.4, proxy)        0.75    1.40   mild under-signal
+  dipolarity mixture            1.93    2.14   ensemble UNDER-SIGNALS - register earns its place
+
+Coverage: the register flags 53/94 (56%) of the WSU-94.
+  A register that flags most of the set is not a register, it is a
+  blanket caveat - and it would move no decision.

@@ -1,0 +1,51 @@
+========================================================================
+#25 - cost of holding t0 fixed when it is pH-dependent
+========================================================================
+
+Reported swing: t0 0.83 -> 0.65 min (-21.7%) up to pH 11
+
+1. Sensitivity of k to a t0 error, by how retained the solute is
+   d(log k) for a -10% error in t0:
+
+          k    tR/t0   d(log10 k)
+       0.05     1.05        0.523
+       0.10     1.10        0.347
+       0.30     1.30        0.171
+       1.00     2.00        0.087
+       5.00     6.00        0.054
+      20.00    21.00        0.048
+
+   -> the error explodes as k -> 0. An ionised acid at D=1.5 and
+      k_neutral=10 sits at k=0.32, i.e. right in the steep region.
+
+2. Bias in fitted D, sweep grid pH 2.5-6.5, t0 measured once at pH 2.5
+   (silanol pKa is not a single number; scanned)
+
+     pKa_sil  t0(2.5)  t0(6.5)   drift  D_fixed  D_percond  t0 bias
+         4.5    0.828    0.652 -21.3%     2.12       1.43    +0.69
+         6.0    0.830    0.693 -16.5%     1.85       1.43    +0.42
+         7.5    0.830    0.814  -2.0%     1.46       1.43    +0.03
+         9.0    0.830    0.829  -0.1%     1.43       1.43    +0.00
+
+   (D_percond differs from 1.50 by ~-0.07 for ALL rows - that is the
+    estimator's incomplete-plateau artifact, not a t0 effect, so it
+    cancels in the difference.)
+
+3. Same bias against the errors #15 says we must beat
+   (worst case above, and the sweep's own measurement floor)
+
+   t0 held fixed (silanol pKa 6.0)             0.4163
+   LSER lack-of-fit floor, ACN (#15 s.5)       0.0300
+   LSER lack-of-fit floor, MeOH (#15 s.5)      0.0410
+   sweep's min detectable per-run dD (n=8)     0.0075
+   prior SD on D_run (slice.py)                0.3000
+
+   -> the t0 bias is 14x the LSER lack-of-fit floor and
+      56x the difference the sweep is designed to resolve.
+
+4. With a t0 marker in EVERY run (the protocol's mitigation)
+   silanol pKa 4.5: t0-attributable bias falls from +0.69 to 0.00
+   silanol pKa 6.0: t0-attributable bias falls from +0.42 to 0.00
+   -> measuring t0 per condition removes the t0-attributable bias.
+      The sweep is safe. The PRODUCT is the exposed case: a user
+      predicting at pH 8 has not injected a t0 marker at pH 8.

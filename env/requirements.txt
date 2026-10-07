@@ -1,0 +1,74 @@
+# Ionisation provider environment — exact lockfile (resolves #20, per #7's provider choice)
+#
+# Direct dependencies:
+#   rdkit   — cheminformatics toolkit (molecule parsing, SMARTS, microspecies rendering)
+#   unipka  — MIT wrapper around Uni-pKa (Apache-2.0), the open-default pKa/microspeciation
+#             provider chosen in #7. Pulls in torch (CPU inference of the Uni-pKa
+#             protonation-ensemble model) and pandas (distribution tables) as transitive deps.
+#
+# Resolved on: 2026-08-14, macOS arm64 (Darwin 24.5.0), Python 3.13.7, pip 26.2.1
+# Recreate with:
+#   python3 -m venv env/ionisation-venv
+#   env/ionisation-venv/bin/pip install -r env/requirements.txt
+#
+# Regenerate this lockfile after any change with:
+#   env/ionisation-venv/bin/pip freeze > env/requirements.txt
+
+anywidget==0.11.0
+asttokens==3.0.2
+certifi==2026.7.22
+charset-normalizer==3.5.0
+comm==0.2.3
+contourpy==1.3.3
+cycler==0.12.1
+executing==2.2.1
+filelock==3.32.3
+fonttools==4.63.0
+fsspec==2026.7.0
+idna==3.18
+ipython==9.16.1
+ipython_pygments_lexers==1.1.1
+ipywidgets==8.1.8
+jedi==0.20.0
+Jinja2==3.1.6
+joblib==1.5.3
+jupyterlab_widgets==3.0.16
+kiwisolver==1.5.0
+MarkupSafe==3.0.3
+matplotlib==3.11.1
+matplotlib-inline==0.2.2
+mpmath==1.3.0
+narwhals==2.24.0
+networkx==3.6.1
+numpy==2.5.2
+packaging==26.3
+pandas==3.0.5
+parso==0.8.7
+pexpect==4.9.0
+pillow==12.3.0
+platformdirs==4.11.3
+prompt_toolkit==3.0.53
+psutil==7.2.2
+psygnal==0.15.1
+ptyprocess==0.7.0
+pure_eval==0.2.3
+Pygments==2.20.0
+pyparsing==3.3.2
+python-dateutil==2.9.0.post0
+rdkit==2026.3.5
+requests==2.34.2
+scikit-learn==1.9.0
+scipy==1.18.0
+seaborn==0.13.2
+setuptools==84.0.0
+six==1.17.0
+stack-data==0.6.3
+sympy==1.14.0
+threadpoolctl==3.6.0
+torch==2.13.0
+traitlets==5.16.1
+typing_extensions==4.16.0
+unipka==0.0.6
+urllib3==2.7.0
+wcwidth==0.8.2
+widgetsnbextension==4.0.15

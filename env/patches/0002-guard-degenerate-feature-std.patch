@@ -1,0 +1,25 @@
+diff --git a/chemprop_solvation/data/scaler.py b/chemprop_solvation/data/scaler.py
+index 324f1ce..4b06e27 100644
+--- a/chemprop_solvation/data/scaler.py
++++ b/chemprop_solvation/data/scaler.py
+@@ -22,6 +22,20 @@ class StandardScaler:
+         self.stds = stds
+         self.replace_nan_token = replace_nan_token
+ 
++        # Guard degenerate standard deviations loaded from a checkpoint. `fit` below already
++        # replaces exact zeros, but a feature that was *effectively* constant across the
++        # training set can land at std ~1e-14 without being exactly 0, and then division
++        # amplifies a 1e-6 difference into 1e7. That is not hypothetical: the SoluteML
++        # features scaler has std = 6.7e-14 for the CDF-normalized RDKit `Ipc` descriptor,
++        # which saturates at 1.0 for essentially every molecule. Any RDKit whose Ipc differs
++        # from the 2021 one in the last few decimal places then drives the network into
++        # nonsense (predictions of order 1e4 instead of order 1). Replacing the degenerate
++        # std with 1 restores the training-time behaviour: the column contributes ~0.
++        if self.stds is not None:
++            self.stds = np.asarray(self.stds, dtype=float)
++            self.stds = np.where(np.isfinite(self.stds), self.stds, 1.0)
++            self.stds = np.where(np.abs(self.stds) < 1e-8, 1.0, self.stds)
++
+     def fit(self, X: List[List[float]]) -> 'StandardScaler':
+         """
+         Learns means and standard deviations across the 0th axis.

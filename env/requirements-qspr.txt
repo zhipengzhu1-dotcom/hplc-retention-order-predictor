@@ -1,0 +1,56 @@
+# QSPR (Abraham solute descriptor) environment — exact lockfile (resolves #38)
+#
+# Separate venv from env/ionisation-venv (#20) on purpose: chemprop_solvation is 2022-era
+# code installed from a pinned git commit in editable mode, and pulls descriptastorus from
+# git. Keeping it out of the ionisation lockfile means a break here cannot take the pKa
+# provider down with it. The two share the same interpreter and the same rdkit/torch/numpy
+# pins, so they are the same platform, not a competing one.
+#
+# Direct dependencies:
+#   torch, rdkit, numpy, scipy, scikit-learn, tqdm, tensorboardX, matplotlib
+#                  — chemprop_solvation's runtime imports
+#   descriptastorus — required for the `rdkit_2d_normalized` feature generator that the
+#                     SoluteML checkpoints were trained with. Not on PyPI; pinned by commit.
+#
+# NOT listed here (installed separately by env/install_qspr.sh):
+#   chemprop_solvation @ fhvermei/chemprop_solvation eb7f7d90fd064d9d939d27ba5837485af9a75295
+#     installed editable from env/_src/ with env/patches/*.patch applied.
+#   The pretrained 25-member ensemble: Zenodo record 5792296 v1.0.0, ML_model_files.zip.
+#
+# Resolved on: 2026-08-15, macOS arm64 (Darwin 24.5.0), Python 3.13.7
+# Recreate with: bash env/install_qspr.sh
+
+contourpy==1.3.3
+cycler==0.12.1
+descriptastorus @ git+https://github.com/bp-kelley/descriptastorus@9a190343bcd3cfd35142d378d952613bcac40797
+filelock==3.32.3
+fonttools==4.63.0
+fsspec==2026.7.0
+Jinja2==3.1.6
+joblib==1.5.3
+kiwisolver==1.5.0
+MarkupSafe==3.0.3
+matplotlib==3.11.1
+mpmath==1.3.0
+narwhals==2.24.0
+networkx==3.6.1
+numpy==2.5.2
+packaging==26.3
+pandas==3.0.5
+pandas-flavor==0.8.1
+pillow==12.3.0
+protobuf==7.35.1
+pyparsing==3.3.2
+python-dateutil==2.9.0.post0
+rdkit==2026.3.5
+scikit-learn==1.9.0
+scipy==1.18.0
+setuptools==84.0.0
+six==1.17.0
+sympy==1.14.0
+tensorboardX==2.6.5
+threadpoolctl==3.6.0
+torch==2.13.0
+tqdm==4.70.0
+typing_extensions==4.16.0
+xarray==2026.7.0

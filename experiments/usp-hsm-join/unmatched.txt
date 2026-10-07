@@ -1,0 +1,41 @@
+238MS 300 C18
+Alltima HP C18 AQ
+Allure
+Bonclone 10 µ C18
+Capcell C18 MGII
+Capcell C18 UG 80
+Chromolith Perf RP-18e
+Cosmosil 5C18-AR-II
+Cosmosil 5C18-MS-II
+Daisogel SP-300-3-ODS-AP
+Deltabond ODS
+Discovery C18 WP
+Discovery HS C18
+Genesis C18 AQ
+Pinnacle DB
+Pinnacle II
+Prestige C18
+Purospher RP-18 endcapped
+Reliachrom C18
+Shim-pack VP-ODS
+SiliaChrom AQ C18
+SiliaChrom SB C18
+SiliaChrom XDB C18
+SiliaChrom XDB1 C18
+SiliaChrom XDB2 C18
+SiliaChrom XT C18
+SiliaChrom dt C18
+Superiorex
+Superspher 100 RP-18 endcapped
+TSKgel ODS-80TM
+Ultra
+Viva 300
+Xterra RP18
+YMC ODS-A
+YMC ODS-AL
+YMC ODS-AM
+LiChrospher 100 RP-18 endcapped
+Reliasil Polar C18
+Superspher 100 RP-18
+Wakosil C18-RS
+Zorbax ODS

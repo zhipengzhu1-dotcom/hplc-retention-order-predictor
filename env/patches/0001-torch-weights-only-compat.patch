@@ -1,0 +1,40 @@
+diff --git a/chemprop_solvation/utils.py b/chemprop_solvation/utils.py
+index c94708c..5e925df 100644
+--- a/chemprop_solvation/utils.py
++++ b/chemprop_solvation/utils.py
+@@ -84,9 +84,9 @@ def load_checkpoint(path: str,
+         #state = torch.load(resources.open_binary(path, 'model.pt'),
+         #                   map_location=lambda storage, loc: storage)
+         state = torch.load(io.BytesIO(pkgutil.get_data('chemprop_solvation', path)),
+-                           map_location=lambda storage, loc: storage)
++                           map_location=lambda storage, loc: storage, weights_only=False)
+     else:
+-        state = torch.load(path, map_location=lambda storage, loc: storage)
++        state = torch.load(path, map_location=lambda storage, loc: storage, weights_only=False)
+     args, loaded_state_dict = state['args'], state['state_dict']
+ 
+     if current_args is not None:
+@@ -135,9 +135,9 @@ def load_scalers(path: str, from_package: bool = False) -> Tuple[StandardScaler,
+         #state = torch.load(resources.open_binary(path, 'model.pt'),
+         #                   map_location=lambda storage, loc: storage)
+         state = torch.load(io.BytesIO(pkgutil.get_data('chemprop_solvation', path)),
+-                           map_location=lambda storage, loc: storage)
++                           map_location=lambda storage, loc: storage, weights_only=False)
+     else:
+-        state = torch.load(path, map_location=lambda storage, loc: storage)
++        state = torch.load(path, map_location=lambda storage, loc: storage, weights_only=False)
+ 
+     scaler = StandardScaler(state['data_scaler']['means'],
+                             state['data_scaler']['stds']) if state['data_scaler'] is not None else None
+@@ -160,9 +160,9 @@ def load_args(path: str, from_package: bool = False) -> Namespace:
+         #return torch.load(resources.open_binary(path, 'model.pt'),
+         #                   map_location=lambda storage, loc: storage)['args']
+        return torch.load(io.BytesIO(pkgutil.get_data('chemprop_solvation', path)),
+-                           map_location=lambda storage, loc: storage)['args']
++                           map_location=lambda storage, loc: storage, weights_only=False)['args']
+     else:
+-        return torch.load(path, map_location=lambda storage, loc: storage)['args']
++        return torch.load(path, map_location=lambda storage, loc: storage, weights_only=False)['args']
+ 
+ 
+ def load_task_names(path: str) -> List[str]:

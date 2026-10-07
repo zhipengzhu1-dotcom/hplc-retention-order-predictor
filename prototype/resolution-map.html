@@ -1,0 +1,640 @@
+<meta charset="utf-8">
+<title>Resolution Map Bench</title>
+<!--
+  PROTOTYPE — THROWAWAY. Wayfinder ticket #10.
+  Three variants of the resolution map, switchable via ?variant= (A|B|C) and arrow keys.
+  All chemistry is SYNTHETIC: 8 fake compounds with LSS + Henderson–Hasselbalch blending.
+  No real model behind this. The question is what the artefact should look like.
+-->
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f9f9f7;
+    --surface: #fcfcfb;
+    --ink: #0b0b0b;
+    --ink-2: #52514e;
+    --muted: #898781;
+    --grid: #e1e0d9;
+    --axis: #c3c2b7;
+    --ring: rgba(11,11,11,0.10);
+    --pill: #0b0b0b;
+    --pill-ink: #fcfcfb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --page: #0d0d0d;
+      --surface: #1a1a19;
+      --ink: #ffffff;
+      --ink-2: #c3c2b7;
+      --muted: #898781;
+      --grid: #2c2c2a;
+      --axis: #383835;
+      --ring: rgba(255,255,255,0.10);
+      --pill: #fcfcfb;
+      --pill-ink: #0b0b0b;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --ink: #ffffff;
+    --ink-2: #c3c2b7;
+    --muted: #898781;
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --ring: rgba(255,255,255,0.10);
+    --pill: #fcfcfb;
+    --pill-ink: #0b0b0b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+    padding-bottom: 84px;
+  }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 28px 20px 0; }
+  header h1 { font-size: 21px; font-weight: 650; margin: 0; letter-spacing: -0.01em; }
+  header .sub { color: var(--ink-2); margin: 2px 0 0; font-size: 14px; }
+  .proto-tag {
+    display: inline-block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); border: 1px solid var(--ring); border-radius: 3px;
+    padding: 1px 7px; margin-left: 10px; vertical-align: 2px;
+  }
+  .variant-head { margin: 20px 0 12px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .variant-head .vname { font-size: 16px; font-weight: 650; }
+  .variant-head .vq { color: var(--ink-2); font-size: 13.5px; }
+  .bench { display: flex; gap: 18px; align-items: flex-start; }
+  .map-panel {
+    background: var(--surface); border: 1px solid var(--ring); border-radius: 6px;
+    padding: 14px; flex: 1 1 auto; min-width: 0;
+  }
+  canvas { display: block; width: 100%; height: auto; cursor: crosshair; }
+  .rail { flex: 0 0 268px; display: flex; flex-direction: column; gap: 14px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--ring); border-radius: 6px; padding: 12px 14px;
+  }
+  .card h3 {
+    margin: 0 0 8px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600;
+  }
+  .readout { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; }
+  .readout table { border-collapse: collapse; width: 100%; }
+  .readout td { padding: 2.5px 0; font-variant-numeric: tabular-nums; }
+  .readout td:last-child { text-align: right; }
+  .readout .lbl { color: var(--ink-2); font-family: system-ui, sans-serif; }
+  .swatches { display: flex; flex-direction: column; gap: 5px; font-size: 12.5px; }
+  .swatches .row { display: flex; align-items: center; gap: 8px; }
+  .swatches .chip { width: 14px; height: 14px; border-radius: 3px; flex: 0 0 auto; }
+  .rampbar { height: 12px; border-radius: 3px; margin: 4px 0 2px; }
+  .rampticks { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted);
+    font-family: ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .toggle { display: flex; gap: 0; margin-top: 8px; border: 1px solid var(--ring); border-radius: 4px; overflow: hidden; width: max-content; }
+  .toggle button {
+    font: 12px ui-monospace, monospace; padding: 3px 10px; border: 0; background: transparent;
+    color: var(--ink-2); cursor: pointer;
+  }
+  .toggle button[aria-pressed="true"] { background: var(--pill); color: var(--pill-ink); }
+  .toggle button:focus-visible, .switcher button:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+  .hint { color: var(--muted); font-size: 12px; margin-top: 6px; }
+  .chrom-panel { margin-top: 18px; }
+  .chrom-panel canvas { cursor: default; }
+  .chrom-title { font-size: 13px; color: var(--ink-2); margin: 0 0 6px;
+    font-family: ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .switcher {
+    position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 4px;
+    background: var(--pill); color: var(--pill-ink);
+    border-radius: 999px; padding: 6px 10px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+    font-size: 13.5px; z-index: 10;
+  }
+  .switcher button {
+    background: none; border: 0; color: inherit; font-size: 16px; cursor: pointer;
+    padding: 2px 8px; border-radius: 999px;
+  }
+  .switcher button:hover { background: rgba(128,128,128,0.25); }
+  .switcher .label { min-width: 250px; text-align: center; font-weight: 550; }
+  @media (max-width: 900px) { .bench { flex-direction: column; } .rail { flex-basis: auto; width: 100%; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Resolution Map Bench<span class="proto-tag">prototype · synthetic data</span></h1>
+    <p class="sub">Critical resolution for 8 fake compounds (3 acids, 2 bases, 3 neutrals), over gradient time × pH, isocratic %B × pH, or isocratic %B × temperature. Hover to read, click to pin a chromatogram and its method card. ←/→ switch variants.</p>
+  </header>
+
+  <div class="variant-head">
+    <span class="vname" id="vname"></span>
+    <span class="vq" id="vq"></span>
+  </div>
+
+  <div class="bench">
+    <div class="map-panel">
+      <div class="toggle" role="group" aria-label="Map axes" style="margin: 0 0 10px;">
+        <button id="ax-grad" aria-pressed="true">tG × pH</button>
+        <button id="ax-iso" aria-pressed="false">%B × pH</button>
+        <button id="ax-temp" aria-pressed="false">%B × T</button>
+      </div>
+      <canvas id="map" width="720" height="560" aria-label="Resolution map"></canvas>
+    </div>
+    <div class="rail">
+      <div class="card" id="legend-card">
+        <h3>Legend</h3>
+        <div id="legend"></div>
+      </div>
+      <div class="card">
+        <h3>Cursor</h3>
+        <div class="readout" id="readout"><span class="lbl">Hover the map…</span></div>
+      </div>
+      <div class="card" id="pin-card" style="display:none">
+        <h3>Pinned point</h3>
+        <div class="readout" id="pin-readout"></div>
+      </div>
+      <div class="card" id="method-card" style="display:none">
+        <h3>Method</h3>
+        <div class="readout" id="method-readout"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chrom-panel card" id="chrom-panel" style="display:none">
+    <p class="chrom-title" id="chrom-title"></p>
+    <canvas id="chrom" width="1000" height="190" aria-label="Predicted chromatogram at pinned point"></canvas>
+    <p class="hint">A chromatogram is a <em>rendering</em> of the ranked retention distribution, not the product. Variant C draws each peak's ±2σ retention band.</p>
+  </div>
+</div>
+
+<div class="switcher" role="toolbar" aria-label="Prototype variant switcher">
+  <button id="prev" aria-label="Previous variant">←</button>
+  <span class="label" id="switch-label"></span>
+  <button id="next" aria-label="Next variant">→</button>
+</div>
+
+<script>
+'use strict';
+/* ============ synthetic chemistry ============ */
+// dlkdT: d(log k)/dT in 1/°C — synthetic van't Hoff sensitivities, spread so order changes with T
+const COMPOUNDS = [
+  { id:'U1', type:'n', lkwN:1.90, sN:3.6, dlkdT:-0.0080 },
+  { id:'A3', type:'a', pKa:3.4, lkwN:1.60, sN:3.3, lkwI:0.50, sI:2.6, dlkdT:-0.0128 },
+  { id:'U2', type:'n', lkwN:2.60, sN:4.4, dlkdT:-0.0092 },
+  { id:'A1', type:'a', pKa:4.4, lkwN:2.90, sN:4.6, lkwI:1.40, sI:3.4, dlkdT:-0.0118 },
+  { id:'A2', type:'a', pKa:6.9, lkwN:2.30, sN:4.0, lkwI:0.90, sI:3.0, dlkdT:-0.0074 },
+  { id:'B1', type:'b', pKa:7.6, lkwN:3.10, sN:4.8, lkwI:1.20, sI:3.2, dlkdT:-0.0135 },
+  { id:'B2', type:'b', pKa:9.2, lkwN:2.45, sN:4.1, lkwI:1.00, sI:3.1, dlkdT:-0.0086 },
+  { id:'U3', type:'n', lkwN:3.30, sN:5.0, dlkdT:-0.0105 },
+];
+const TEMP_PH = 3.0, TEMP_REF = 30; // fixed pH and reference °C for the %B × T mode
+const T0 = 1.2, TD = 0.9, PHI0 = 0.05, PHI1 = 0.95, NPLATES = 2500;
+
+function ionisedFraction(c, pH) {
+  if (c.type === 'n') return 0;
+  const x = c.type === 'a' ? pH - c.pKa : c.pKa - pH;
+  return 1 / (1 + Math.pow(10, -x));
+}
+// isocratic at fixed %B: k straight from the LSS relation
+function predictIso(c, phiB, pH) {
+  const fi = ionisedFraction(c, pH), fn = 1 - fi;
+  const lkw = Math.log10(fn * Math.pow(10, c.lkwN) + fi * Math.pow(10, c.lkwI || 0));
+  const S = fn * c.sN + fi * (c.sI || c.sN);
+  const k = Math.min(Math.pow(10, lkw - S * phiB), 300);
+  const tR = T0 * (1 + k);
+  const sigma = (T0 / Math.sqrt(NPLATES)) * (1 + k);
+  const sLogK = 0.008 + (c.type === 'n' ? 0 : 0.05 * 4 * fi * fn);
+  const sigTR = 2.303 * T0 * k * sLogK;
+  return { tR, sigma, sigTR };
+}
+// isocratic at fixed pH, temperature on the swept axis (van't Hoff, linearised)
+function predictIsoT(c, phiB, T) {
+  const fi = ionisedFraction(c, TEMP_PH), fn = 1 - fi;
+  const lkw = Math.log10(fn * Math.pow(10, c.lkwN) + fi * Math.pow(10, c.lkwI || 0));
+  const S = fn * c.sN + fi * (c.sI || c.sN);
+  const k = Math.min(Math.pow(10, lkw - S * phiB + c.dlkdT * (T - TEMP_REF)), 300);
+  const tR = T0 * (1 + k);
+  const sigma = (T0 / Math.sqrt(NPLATES)) * (1 + k);
+  // temperature-term σ: no public data crosses pH × T (ticket #4), so the T slope is barely
+  // constrained — give it its own error that grows away from the reference temperature
+  const sLogK = 0.008 + (c.type === 'n' ? 0 : 0.05 * 4 * fi * fn) + 0.0012 * Math.abs(T - TEMP_REF);
+  const sigTR = 2.303 * T0 * k * sLogK;
+  return { tR, sigma, sigTR };
+}
+// returns { tR, sigma (peak σ, min), sigTR (prediction σ of tR, min) }
+function predict(c, tG, pH) {
+  const fi = ionisedFraction(c, pH), fn = 1 - fi;
+  const lkw = Math.log10(fn * Math.pow(10, c.lkwN) + fi * Math.pow(10, c.lkwI || 0));
+  const S = fn * c.sN + fi * (c.sI || c.sN);
+  const k0 = Math.pow(10, lkw - S * PHI0);
+  const b = S * (PHI1 - PHI0) * T0 / tG;
+  const arg = 2.303 * b * k0 + 1;
+  const tR = T0 + TD + (T0 / b) * Math.log10(arg);
+  const ke = Math.max(1 / (2.303 * b), 0.5);           // elution-time retention factor, crude
+  const sigma = 0.8 * (T0 / Math.sqrt(NPLATES)) * (1 + ke);
+  // prediction uncertainty: base log-k error, inflated near pKa (pKa error propagates steepest there)
+  const sLogK = 0.008 + (c.type === 'n' ? 0 : 0.05 * 4 * fi * fn);
+  const frac = (2.303 * b * k0) / arg;
+  const sigTR = 2.303 * sLogK * (T0 / b) * frac / 2.303; // ≈ dtR/dlogk · σlogk
+  return { tR, sigma, sigTR };
+}
+function evaluate(x, y, mode) {
+  const fn = mode === 'iso' ? predictIso : mode === 'temp' ? predictIsoT : predict;
+  const ps = COMPOUNDS.map(c => ({ c, ...fn(c, x, y) })).sort((a, b) => a.tR - b.tR);
+  let critRs = Infinity, critPair = null, critSig = 0, pAll15 = 1, pAll20 = 1;
+  for (let i = 0; i < ps.length - 1; i++) {
+    const a = ps[i], b = ps[i + 1];
+    const w = 2 * (a.sigma + b.sigma);                  // (w1+w2)/2, w = 4σ
+    const rs = (b.tR - a.tR) / w;
+    const sRs = Math.sqrt(a.sigTR ** 2 + b.sigTR ** 2) / w;
+    pAll15 *= phi((rs - 1.5) / sRs);
+    pAll20 *= phi((rs - 2.0) / sRs);
+    if (rs < critRs) { critRs = rs; critPair = a.c.id + '/' + b.c.id; critSig = sRs; }
+  }
+  return { critRs, critPair, critSig, pAll15, pAll20, peaks: ps };
+}
+function phi(z) { return 0.5 * (1 + erf(z / Math.SQRT2)); }
+function erf(x) {
+  const s = x < 0 ? -1 : 1; x = Math.abs(x);
+  const t = 1 / (1 + 0.3275911 * x);
+  const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+  return s * y;
+}
+
+/* ============ grid ============ */
+const NX = 96, NY = 72;
+const PH_Y = { ymin: 2, ymax: 10, yticks: [2,4,6,8,10], yAxisLabel: 'mobile-phase pH',
+               yName: 'pH', yFmt: v => v.toFixed(2) };
+const MODES = {
+  grad: { xmin: 5, xmax: 60, ticks: [10,20,30,40,50,60], tickFmt: v => String(v),
+          axisLabel: 'gradient time  tG (min)', xName: 'tG', xFmt: v => v.toFixed(1) + ' min', ...PH_Y },
+  iso:  { xmin: 0.10, xmax: 0.90, ticks: [0.2,0.4,0.6,0.8], tickFmt: v => (v*100).toFixed(0),
+          axisLabel: 'isocratic  %B', xName: '%B', xFmt: v => (v*100).toFixed(0) + ' %', ...PH_Y },
+  temp: { xmin: 0.10, xmax: 0.90, ticks: [0.2,0.4,0.6,0.8], tickFmt: v => (v*100).toFixed(0),
+          axisLabel: 'isocratic  %B', xName: '%B', xFmt: v => (v*100).toFixed(0) + ' %',
+          ymin: 25, ymax: 55, yticks: [25,35,45,55], yAxisLabel: 'column temperature, °C',
+          yName: 'T', yFmt: v => v.toFixed(1) + ' °C' },
+};
+let axisMode = 'grad';
+const xAt = (i, m) => MODES[m || axisMode].xmin + (MODES[m || axisMode].xmax - MODES[m || axisMode].xmin) * i / (NX - 1);
+const yAt = (j, m) => MODES[m || axisMode].ymin + (MODES[m || axisMode].ymax - MODES[m || axisMode].ymin) * j / (NY - 1);
+function computeGrid(mode) {
+  const g = { rs: new Float32Array(NX * NY), sig: new Float32Array(NX * NY),
+              p15: new Float32Array(NX * NY), p20: new Float32Array(NX * NY),
+              pair: new Array(NX * NY) };
+  for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) {
+    const e = evaluate(xAt(i, mode), yAt(j, mode), mode), n = j * NX + i;
+    g.rs[n] = Math.min(e.critRs, 6); g.sig[n] = e.critSig;
+    g.p15[n] = e.pAll15; g.p20[n] = e.pAll20; g.pair[n] = e.critPair;
+  }
+  return g;
+}
+const GRIDS = { grad: computeGrid('grad'), iso: computeGrid('iso'), temp: computeGrid('temp') };
+let G = GRIDS.grad;
+// pair frequency → fixed color slots
+const CAT_LIGHT = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4'];
+const CAT_DARK  = ['#3987e5', '#d95926', '#199e70', '#c98500', '#d55181'];
+const CAT8_LIGHT = ['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7','#e34948'];
+const CAT8_DARK  = ['#3987e5','#d95926','#199e70','#c98500','#d55181','#008300','#9085e9','#e66767'];
+const pairCounts = {};
+GRIDS.grad.pair.concat(GRIDS.iso.pair, GRIDS.temp.pair).forEach(p => pairCounts[p] = (pairCounts[p] || 0) + 1);
+const pairOrder = Object.keys(pairCounts).sort((a, b) => pairCounts[b] - pairCounts[a]);
+const pairSlot = {}; pairOrder.forEach((p, i) => pairSlot[p] = i < 5 ? i : -1);
+
+/* ============ theming ============ */
+const RAMP = ['#cde2fb','#b7d3f6','#9ec5f4','#86b6ef','#6da7ec','#5598e7','#3987e5','#2a78d6','#256abf','#1c5cab','#184f95','#104281','#0d366b'];
+function isDark() {
+  const t = document.documentElement.getAttribute('data-theme');
+  if (t === 'dark') return true;
+  if (t === 'light') return false;
+  return matchMedia('(prefers-color-scheme: dark)').matches;
+}
+function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function hexRGB(h) { return [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)]; }
+function rampColor(t) {  // t in 0..1; dark mode reversed so low values recede to surface
+  const r = isDark() ? RAMP.slice().reverse() : RAMP;
+  const x = Math.max(0, Math.min(0.9999, t)) * (r.length - 1);
+  const i = Math.floor(x), f = x - i;
+  const a = hexRGB(r[i]), b = hexRGB(r[i + 1]);
+  return [a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f, a[2]+(b[2]-a[2])*f].map(Math.round);
+}
+function mix(hex, surfHex, t) {  // t=1 → full color, t=0 → surface
+  const a = hexRGB(hex), s = hexRGB(surfHex);
+  return [s[0]+(a[0]-s[0])*t, s[1]+(a[1]-s[1])*t, s[2]+(a[2]-s[2])*t].map(Math.round);
+}
+
+/* ============ variants ============ */
+const VARIANTS = {
+  A: { name: 'A — The classic', q: 'Point-estimate critical Rs, contours at 1.5 and 2. This is what every existing tool shows. What does it hide?' },
+  B: { name: 'B — Pair territory', q: 'Colour is the identity of the critical pair; depth of colour is its Rs. The borders are where the critical pair changes — is this the interesting structure?' },
+  C: { name: 'C — Probabilistic design space', q: 'Colour is P(all Rs ≥ target). Dashed line: the point-estimate Rs = target contour. Hatch: high model uncertainty. Does probability read as clearly as resolution?' },
+};
+const ORDER = ['A', 'B', 'C'];
+let variant = new URLSearchParams(location.search).get('variant') || location.hash.replace('#', '');
+if (!ORDER.includes(variant)) variant = 'A';
+let target20 = true;  // variant C threshold toggle: true → Rs 2.0, false → 1.5
+let pinned = null;    // {i, j}
+
+/* ============ map drawing ============ */
+const map = document.getElementById('map');
+const MW = 720, MH = 560, ML = 52, MR = 14, MT = 10, MB = 40;
+const PW = MW - ML - MR, PH = MH - MT - MB;
+const dpr = Math.min(devicePixelRatio || 1, 2);
+map.width = MW * dpr; map.height = MH * dpr; map.style.aspectRatio = MW + '/' + MH;
+const ctx = map.getContext('2d');
+
+const cellX = i => ML + PW * i / NX, cellY = j => MT + PH * (1 - (j + 1) / NY);
+const cw = PW / NX, ch = PH / NY;
+
+function drawMap() {
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const surf = css('--surface');
+  ctx.fillStyle = surf; ctx.fillRect(0, 0, MW, MH);
+  const cat = isDark() ? CAT_DARK : CAT_LIGHT;
+  const P = target20 ? G.p20 : G.p15;
+
+  for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) {
+    const n = j * NX + i;
+    let rgb;
+    if (variant === 'A') rgb = rampColor(G.rs[n] / 3);
+    else if (variant === 'C') rgb = rampColor(P[n]);
+    else {
+      const slot = pairSlot[G.pair[n]];
+      const base = slot < 0 ? '#898781' : cat[slot];
+      // saturation anchored to decision thresholds: <1.5 washed out, 1.5–2 marginal, >2 saturated
+      const rs = G.rs[n];
+      const t = rs < 1.5 ? 0.08 + 0.15 * rs / 1.5
+              : rs < 2   ? 0.30 + 0.30 * (rs - 1.5) / 0.5
+              : Math.min(0.60 + 0.40 * (rs - 2), 1);
+      rgb = mix(base, surf, t);
+    }
+    ctx.fillStyle = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+    ctx.fillRect(cellX(i), cellY(j), cw + 0.5, ch + 0.5);
+  }
+
+  if (variant === 'C') hatchUncertain();
+  if (variant === 'A') { contour(G.rs, 1.5, true); contour(G.rs, 2.0, false); }
+  if (variant === 'C') { contour(P, 0.90, false); contour(G.rs, target20 ? 2.0 : 1.5, true); }
+  if (variant === 'B') { contour(G.rs, 1.5, true); labelRegions(cat); }
+
+  axes();
+  if (pinned) marker(pinned.i, pinned.j);
+}
+
+function contour(field, level, dashed) {
+  ctx.save();
+  ctx.strokeStyle = css('--ink'); ctx.lineWidth = dashed ? 1.2 : 2;
+  if (dashed) ctx.setLineDash([5, 4]);
+  ctx.beginPath();
+  const v = (i, j) => field[j * NX + i];
+  for (let j = 0; j < NY - 1; j++) for (let i = 0; i < NX - 1; i++) {
+    // marching squares, midpoint interpolation
+    const x0 = cellX(i) + cw / 2, y0 = cellY(j) + ch / 2;
+    const a = v(i, j), b = v(i + 1, j), c = v(i + 1, j + 1), d = v(i, j + 1);
+    const pts = [];
+    const lerp = (p, q) => (level - p) / (q - p);
+    if ((a < level) !== (b < level)) pts.push([x0 + cw * lerp(a, b), y0]);
+    if ((b < level) !== (c < level)) pts.push([x0 + cw, y0 - ch * lerp(b, c)]);
+    if ((d < level) !== (c < level)) pts.push([x0 + cw * lerp(d, c), y0 - ch]);
+    if ((a < level) !== (d < level)) pts.push([x0, y0 - ch * lerp(a, d)]);
+    if (pts.length === 2) { ctx.moveTo(pts[0][0], pts[0][1]); ctx.lineTo(pts[1][0], pts[1][1]); }
+  }
+  ctx.stroke(); ctx.restore();
+}
+
+function hatchUncertain() {
+  ctx.save();
+  ctx.beginPath();
+  for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++)
+    if (G.sig[j * NX + i] > 0.45) ctx.rect(cellX(i), cellY(j), cw + 0.5, ch + 0.5);
+  ctx.clip();
+  ctx.strokeStyle = css('--ink'); ctx.globalAlpha = 0.28; ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let x = -MH; x < MW + MH; x += 7) { ctx.moveTo(x, MT); ctx.lineTo(x + PH, MT + PH); }
+  ctx.stroke(); ctx.restore();
+}
+
+function labelRegions(cat) {
+  // label each top-5 pair at the centroid of its cells (crude, fine for a prototype)
+  const acc = {};
+  for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) {
+    const p = G.pair[j * NX + i];
+    if (pairSlot[p] < 0) continue;
+    (acc[p] = acc[p] || { x: 0, y: 0, n: 0 });
+    acc[p].x += cellX(i) + cw / 2; acc[p].y += cellY(j) + ch / 2; acc[p].n++;
+  }
+  ctx.save();
+  ctx.font = '600 12px ui-monospace, monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (const p in acc) {
+    const cx = acc[p].x / acc[p].n, cy = acc[p].y / acc[p].n;
+    const w = ctx.measureText(p).width + 12;
+    ctx.fillStyle = css('--surface'); ctx.globalAlpha = 0.85;
+    ctx.beginPath(); ctx.roundRect(cx - w / 2, cy - 10, w, 20, 4); ctx.fill();
+    ctx.globalAlpha = 1; ctx.fillStyle = css('--ink'); ctx.fillText(p, cx, cy + 0.5);
+  }
+  ctx.restore();
+}
+
+function axes() {
+  ctx.save();
+  ctx.strokeStyle = css('--axis'); ctx.lineWidth = 1;
+  ctx.strokeRect(ML, MT, PW, PH);
+  ctx.fillStyle = css('--muted');
+  ctx.font = '11px ui-monospace, monospace'; ctx.textAlign = 'center';
+  const M = MODES[axisMode];
+  for (const tv of M.ticks) {
+    const x = ML + PW * (tv - M.xmin) / (M.xmax - M.xmin);
+    ctx.fillText(M.tickFmt(tv), x, MT + PH + 16);
+  }
+  ctx.font = '12px system-ui, sans-serif';
+  ctx.fillText(M.axisLabel, ML + PW / 2, MT + PH + 32);
+  ctx.font = '11px ui-monospace, monospace'; ctx.textAlign = 'right';
+  for (const yv of M.yticks) {
+    const y = MT + PH * (1 - (yv - M.ymin) / (M.ymax - M.ymin));
+    ctx.fillText(String(yv), ML - 8, y + 4);
+  }
+  ctx.save();
+  ctx.translate(14, MT + PH / 2); ctx.rotate(-Math.PI / 2);
+  ctx.textAlign = 'center'; ctx.font = '12px system-ui, sans-serif';
+  ctx.fillText(M.yAxisLabel, 0, 0);
+  ctx.restore(); ctx.restore();
+}
+
+function marker(i, j) {
+  ctx.save();
+  const x = cellX(i) + cw / 2, y = cellY(j) + ch / 2;
+  ctx.strokeStyle = css('--ink'); ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI * 2); ctx.stroke();
+  ctx.strokeStyle = css('--surface'); ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI * 2); ctx.stroke();
+  ctx.restore();
+}
+
+/* ============ legend / rail ============ */
+function renderLegend() {
+  const el = document.getElementById('legend');
+  const cat = isDark() ? CAT_DARK : CAT_LIGHT;
+  const stops = (isDark() ? RAMP.slice().reverse() : RAMP).join(',');
+  if (variant === 'A') {
+    el.innerHTML = `<div class="rampbar" style="background:linear-gradient(90deg,${stops})"></div>
+      <div class="rampticks"><span>0</span><span>1.5</span><span>3+</span></div>
+      <p class="hint">Critical Rs (min over adjacent pairs). Solid contour Rs = 2, dashed Rs = 1.5.</p>`;
+  } else if (variant === 'B') {
+    el.innerHTML = `<div class="swatches">` + pairOrder.slice(0, 5).map((p, i) =>
+      `<div class="row"><span class="chip" style="background:${cat[i]}"></span><span class="readout">${p}</span></div>`).join('') +
+      `<div class="row"><span class="chip" style="background:#898781"></span><span>other pairs</span></div></div>
+      <p class="hint">Washed out → failing (Rs &lt; 1.5, inside the dashed contour), mid → marginal, saturated → Rs ≥ 2.</p>`;
+  } else {
+    el.innerHTML = `<div class="rampbar" style="background:linear-gradient(90deg,${stops})"></div>
+      <div class="rampticks"><span>0</span><span>0.5</span><span>1.0</span></div>
+      <p class="hint">P(all adjacent pairs Rs ≥ target). Solid contour P = 0.90; dashed = point-estimate Rs = target; hatch = high model σ.</p>
+      <div class="toggle" role="group" aria-label="Rs target">
+        <button id="t15" aria-pressed="${!target20}">Rs ≥ 1.5</button>
+        <button id="t20" aria-pressed="${target20}">Rs ≥ 2.0</button>
+      </div>`;
+    document.getElementById('t15').onclick = () => { target20 = false; renderAll(); };
+    document.getElementById('t20').onclick = () => { target20 = true; renderAll(); };
+  }
+}
+
+function readoutHTML(i, j) {
+  const n = j * NX + i, P = target20 ? G.p20 : G.p15;
+  return `<table>
+    <tr><td class="lbl">${MODES[axisMode].xName}</td><td>${MODES[axisMode].xFmt(xAt(i))}</td></tr>
+    <tr><td class="lbl">${MODES[axisMode].yName}</td><td>${MODES[axisMode].yFmt(yAt(j))}</td></tr>
+    <tr><td class="lbl">critical pair</td><td>${G.pair[n]}</td></tr>
+    <tr><td class="lbl">critical Rs</td><td>${G.rs[n].toFixed(2)} ± ${G.sig[n].toFixed(2)}</td></tr>
+    <tr><td class="lbl">P(all Rs ≥ ${target20 ? '2.0' : '1.5'})</td><td>${(P[n] * 100).toFixed(0)}%</td></tr>
+  </table>`;
+}
+
+/* ============ chromatogram ============ */
+const chrom = document.getElementById('chrom');
+function methodCardHTML(i, j) {
+  const x = xAt(i), y = yAt(j);
+  const program = axisMode === 'grad'
+    ? `<tr><td class="lbl">gradient</td><td></td></tr>
+       <tr><td>&nbsp;&nbsp;0.0 min</td><td>${(PHI0*100).toFixed(0)} %B</td></tr>
+       <tr><td>&nbsp;&nbsp;${x.toFixed(1)} min</td><td>${(PHI1*100).toFixed(0)} %B</td></tr>`
+    : `<tr><td class="lbl">mode</td><td>isocratic ${(x*100).toFixed(0)} %B</td></tr>`;
+  const pH = axisMode === 'temp' ? TEMP_PH : y;
+  const temp = axisMode === 'temp' ? y : TEMP_REF;
+  return `<table>
+    ${program}
+    <tr><td class="lbl">pH (aqueous)</td><td>${pH.toFixed(2)}</td></tr>
+    <tr><td class="lbl">temperature</td><td>${temp.toFixed(1)} °C</td></tr>
+    <tr><td class="lbl">column</td><td>Proto-C18</td></tr>
+    <tr><td class="lbl">dimensions</td><td>150 × 4.6 mm, 4 µm</td></tr>
+    <tr><td class="lbl">flow</td><td>1.0 mL/min</td></tr>
+    <tr><td class="lbl">t0 / dwell</td><td>${T0.toFixed(1)} / ${TD.toFixed(1)} min</td></tr>
+    <tr><td class="lbl">plates N</td><td>${NPLATES}</td></tr>
+  </table>`;
+}
+function drawChrom(i, j) {
+  const x = xAt(i), y = yAt(j);
+  const e = evaluate(x, y, axisMode);
+  const CW = 1000, CH = 190, L = 36, B = 28;
+  chrom.width = CW * dpr; chrom.height = CH * dpr; chrom.style.aspectRatio = CW + '/' + CH;
+  const c = chrom.getContext('2d');
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  c.fillStyle = css('--surface'); c.fillRect(0, 0, CW, CH);
+  const tMax = Math.max(...e.peaks.map(p => p.tR)) + 1.5;
+  const X = t => L + (CW - L - 12) * t / tMax;
+  const cat8 = isDark() ? CAT8_DARK : CAT8_LIGHT;
+  const cidx = {}; COMPOUNDS.forEach((cc, k) => cidx[cc.id] = k);
+  // baseline + axis
+  c.strokeStyle = css('--axis'); c.beginPath(); c.moveTo(L, CH - B); c.lineTo(CW - 12, CH - B); c.stroke();
+  c.fillStyle = css('--muted'); c.font = '11px ui-monospace, monospace'; c.textAlign = 'center';
+  for (let t = 0; t <= tMax; t += tMax > 30 ? 10 : 5) c.fillText(t.toFixed(0), X(t), CH - B + 16);
+  c.fillText('min', CW - 20, CH - B + 16);
+  const H = CH - B - 34;
+  for (const p of e.peaks) {
+    const col = cat8[cidx[p.c.id]];
+    const amp = H * (0.55 + 0.45 * ((cidx[p.c.id] * 37) % 10) / 10);
+    c.fillStyle = col; c.globalAlpha = 0.85;
+    c.beginPath(); c.moveTo(X(p.tR - 4 * p.sigma), CH - B);
+    for (let t = p.tR - 4 * p.sigma; t <= p.tR + 4 * p.sigma; t += p.sigma / 6)
+      c.lineTo(X(t), CH - B - amp * Math.exp(-((t - p.tR) ** 2) / (2 * p.sigma ** 2)));
+    c.lineTo(X(p.tR + 4 * p.sigma), CH - B); c.closePath(); c.fill();
+    c.globalAlpha = 1;
+    if (variant === 'C') { // ±2σ prediction band under the peak
+      c.strokeStyle = col; c.lineWidth = 3; c.beginPath();
+      c.moveTo(X(p.tR - 2 * p.sigTR), CH - B + 5); c.lineTo(X(p.tR + 2 * p.sigTR), CH - B + 5); c.stroke();
+    }
+    c.fillStyle = css('--ink'); c.font = '600 11px ui-monospace, monospace';
+    c.fillText(p.c.id, X(p.tR), CH - B - amp - 6);
+  }
+  document.getElementById('chrom-title').textContent =
+    `Predicted chromatogram · ${MODES[axisMode].xName} ${MODES[axisMode].xFmt(x)} · ${MODES[axisMode].yName} ${MODES[axisMode].yFmt(y)} · critical ${e.critPair} Rs ${e.critRs.toFixed(2)}`;
+  document.getElementById('method-card').style.display = '';
+  document.getElementById('method-readout').innerHTML = methodCardHTML(i, j);
+}
+
+/* ============ interaction ============ */
+function cellFromEvent(ev) {
+  const r = map.getBoundingClientRect();
+  const x = (ev.clientX - r.left) * MW / r.width, y = (ev.clientY - r.top) * MH / r.height;
+  const i = Math.floor((x - ML) / PW * NX), j = Math.floor((1 - (y - MT) / PH) * NY);
+  if (i < 0 || i >= NX || j < 0 || j >= NY) return null;
+  return { i, j };
+}
+map.addEventListener('mousemove', ev => {
+  const c = cellFromEvent(ev);
+  document.getElementById('readout').innerHTML = c ? readoutHTML(c.i, c.j) : '<span class="lbl">Hover the map…</span>';
+});
+map.addEventListener('click', ev => {
+  const c = cellFromEvent(ev);
+  if (!c) return;
+  pinned = c;
+  document.getElementById('pin-card').style.display = '';
+  document.getElementById('pin-readout').innerHTML = readoutHTML(c.i, c.j);
+  document.getElementById('chrom-panel').style.display = '';
+  drawChrom(c.i, c.j);
+  drawMap();
+});
+
+function setVariant(v) {
+  variant = v;
+  try { history.replaceState(null, '', '#' + v); } catch (e) { /* sandboxed host */ }
+  renderAll();
+}
+function cycle(d) {
+  setVariant(ORDER[(ORDER.indexOf(variant) + d + ORDER.length) % ORDER.length]);
+}
+function setAxisMode(m) {
+  axisMode = m;
+  G = GRIDS[m];
+  pinned = null;
+  document.getElementById('pin-card').style.display = 'none';
+  document.getElementById('method-card').style.display = 'none';
+  document.getElementById('chrom-panel').style.display = 'none';
+  document.getElementById('ax-grad').setAttribute('aria-pressed', String(m === 'grad'));
+  document.getElementById('ax-iso').setAttribute('aria-pressed', String(m === 'iso'));
+  document.getElementById('ax-temp').setAttribute('aria-pressed', String(m === 'temp'));
+  renderAll();
+}
+document.getElementById('ax-grad').onclick = () => setAxisMode('grad');
+document.getElementById('ax-iso').onclick = () => setAxisMode('iso');
+document.getElementById('ax-temp').onclick = () => setAxisMode('temp');
+document.getElementById('prev').onclick = () => cycle(-1);
+document.getElementById('next').onclick = () => cycle(1);
+addEventListener('keydown', ev => {
+  const t = ev.target;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  if (ev.key === 'ArrowLeft') cycle(-1);
+  if (ev.key === 'ArrowRight') cycle(1);
+});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderAll);
+new MutationObserver(renderAll).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+function renderAll() {
+  document.getElementById('vname').textContent = VARIANTS[variant].name;
+  document.getElementById('vq').textContent = VARIANTS[variant].q;
+  document.getElementById('switch-label').textContent = VARIANTS[variant].name;
+  renderLegend();
+  drawMap();
+  if (pinned) { drawChrom(pinned.i, pinned.j); document.getElementById('pin-readout').innerHTML = readoutHTML(pinned.i, pinned.j); }
+}
+renderAll();
+</script>

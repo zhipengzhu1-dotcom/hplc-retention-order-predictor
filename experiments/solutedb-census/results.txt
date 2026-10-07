@@ -1,0 +1,25 @@
+SoluteDB: 8366 parsed, 8183 skeletons, 1119 Murcko scaffolds
+RepoRT (non-SMRT): 18872 unique compounds by inchikey.std
+
+              tier  compounds    share
+         in_corpus       1691     9.0%
+     scaffold_seen       4156    22.0%
+ novel_in_envelope      12629    66.9%
+   out_of_envelope        396     2.1%
+
+  out_of_envelope reasons (a compound may have both):
+                         charged: 370
+                       element:B: 11
+                      element:Si: 7
+                      element:Se: 5
+                      element:Sn: 3
+                      element:Co: 1
+                      element:Na: 1
+
+  weighted by measurements (103534 retention records):
+     novel_in_envelope      49359    47.7%
+         scaffold_seen      28202    27.2%
+             in_corpus      24420    23.6%
+       out_of_envelope       1553     1.5%
+
+wrote census.csv (18872 rows)

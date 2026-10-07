@@ -1,0 +1,392 @@
+{
+ "column": "XBridge Shield RP18",
+ "modifier": "acetonitrile",
+ "S": 1000,
+ "seed": 20260815,
+ "n_compounds": 16,
+ "n_valid": 15,
+ "ops": [
+  [
+   0.3,
+   3.0
+  ],
+  [
+   0.3,
+   7.0
+  ],
+  [
+   0.5,
+   5.0
+  ]
+ ],
+ "inflation_lambda": {
+  "E": 3.95,
+  "S": 3.7,
+  "A": 3.85,
+  "B": 2.15
+ },
+ "wsu94_rmse": {
+  "E": 0.154,
+  "S": 0.186,
+  "A": 0.08,
+  "B": 0.063
+ },
+ "order": {
+  "0.3_3.0": {
+   "confident": 77,
+   "ambiguous": 24,
+   "coinflip": 4,
+   "logp_agreement": {
+    "confident": 0.883,
+    "ambiguous": 0.417,
+    "coinflip": 0.5
+   },
+   "coinflip_pairs": [
+    [
+     "Caffeine",
+     "Lidocaine",
+     0.55
+    ],
+    [
+     "Caffeine",
+     "Propranolol",
+     0.463
+    ],
+    [
+     "Lidocaine",
+     "Propranolol",
+     0.419
+    ],
+    [
+     "Lidocaine",
+     "4-Aminobenzoic acid",
+     0.568
+    ]
+   ],
+   "rank_iqr_median": 2.0
+  },
+  "0.3_7.0": {
+   "confident": 73,
+   "ambiguous": 28,
+   "coinflip": 4,
+   "logp_agreement": {
+    "confident": 0.767,
+    "ambiguous": 0.536,
+    "coinflip": 0.5
+   },
+   "coinflip_pairs": [
+    [
+     "Benzamide",
+     "Ketoprofen",
+     0.587
+    ],
+    [
+     "Caffeine",
+     "Propranolol",
+     0.547
+    ],
+    [
+     "Ibuprofen",
+     "Lidocaine",
+     0.562
+    ],
+    [
+     "Naproxen",
+     "Ketoprofen",
+     0.408
+    ]
+   ],
+   "rank_iqr_median": 2.0
+  },
+  "0.5_5.0": {
+   "confident": 70,
+   "ambiguous": 31,
+   "coinflip": 4,
+   "logp_agreement": {
+    "confident": 0.757,
+    "ambiguous": 0.355,
+    "coinflip": 0.75
+   },
+   "coinflip_pairs": [
+    [
+     "Benzamide",
+     "Imipramine",
+     0.573
+    ],
+    [
+     "Caffeine",
+     "Benzoic acid",
+     0.56
+    ],
+    [
+     "Acetophenone",
+     "Ibuprofen",
+     0.585
+    ],
+    [
+     "Methylparaben",
+     "Naproxen",
+     0.435
+    ]
+   ],
+   "rank_iqr_median": 2.0
+  }
+ },
+ "attribution": {
+  "0.3_3.0": {
+   "neutral": {
+    "desc": 0.995,
+    "column": 0.006,
+    "pKa": 0.0,
+    "D": -0.005,
+    "n": 10,
+    "sd_logk_median": 0.157
+   },
+   "partial": {
+    "desc": 0.927,
+    "column": 0.006,
+    "pKa": 0.044,
+    "D": 0.017,
+    "n": 1,
+    "sd_logk_median": 0.269
+   },
+   "ionised": {
+    "desc": 0.138,
+    "column": 0.003,
+    "pKa": 0.012,
+    "D": 0.838,
+    "n": 4,
+    "sd_logk_median": 0.554
+   }
+  },
+  "0.3_7.0": {
+   "neutral": {
+    "desc": 0.996,
+    "column": 0.002,
+    "pKa": 0.0,
+    "D": -0.007,
+    "n": 6,
+    "sd_logk_median": 0.15
+   },
+   "partial": {
+    "desc": 0.342,
+    "column": 0.0,
+    "pKa": 0.524,
+    "D": 0.15,
+    "n": 1,
+    "sd_logk_median": 0.352
+   },
+   "ionised": {
+    "desc": 0.204,
+    "column": 0.002,
+    "pKa": -0.091,
+    "D": 0.778,
+    "n": 8,
+    "sd_logk_median": 0.476
+   }
+  },
+  "0.5_5.0": {
+   "neutral": {
+    "desc": 0.997,
+    "column": 0.002,
+    "pKa": 0.0,
+    "D": -0.009,
+    "n": 6,
+    "sd_logk_median": 0.102
+   },
+   "partial": {
+    "desc": 0.187,
+    "column": -0.001,
+    "pKa": 0.667,
+    "D": 0.035,
+    "n": 5,
+    "sd_logk_median": 0.309
+   },
+   "ionised": {
+    "desc": 0.065,
+    "column": 0.002,
+    "pKa": -0.006,
+    "D": 0.919,
+    "n": 4,
+    "sd_logk_median": 0.518
+   }
+  }
+ },
+ "eE": {
+  "0.3_3.0": {
+   "median_abs_dlogk": 0.083,
+   "max_abs_dlogk": 0.1264,
+   "max_abs_dP": 0.128,
+   "classes_with": [
+    77,
+    24,
+    4
+   ],
+   "classes_without": [
+    78,
+    22,
+    5
+   ]
+  },
+  "0.3_7.0": {
+   "median_abs_dlogk": 0.0828,
+   "max_abs_dlogk": 0.1269,
+   "max_abs_dP": 0.067,
+   "classes_with": [
+    73,
+    28,
+    4
+   ],
+   "classes_without": [
+    75,
+    26,
+    4
+   ]
+  },
+  "0.5_5.0": {
+   "median_abs_dlogk": 0.0394,
+   "max_abs_dlogk": 0.066,
+   "max_abs_dP": 0.062,
+   "classes_with": [
+    70,
+    31,
+    4
+   ],
+   "classes_without": [
+    70,
+    31,
+    4
+   ]
+  }
+ },
+ "A_check": [
+  {
+   "compound": "Benzamide",
+   "pred_A": 0.546,
+   "called": "A!=0",
+   "truth": "A!=0",
+   "correct": true
+  },
+  {
+   "compound": "Caffeine",
+   "pred_A": 0.11,
+   "called": "A!=0",
+   "truth": "A=0",
+   "correct": false,
+   "dlogk_consequence": {
+    "phi=0.3": -0.0354,
+    "phi=0.5": -0.0312
+   }
+  },
+  {
+   "compound": "Acetophenone",
+   "pred_A": 0.023,
+   "called": "A!=0",
+   "truth": "A=0",
+   "correct": false,
+   "dlogk_consequence": {
+    "phi=0.3": -0.0074,
+    "phi=0.5": -0.0065
+   }
+  },
+  {
+   "compound": "Methylparaben",
+   "pred_A": 0.733,
+   "called": "A!=0",
+   "truth": "A!=0",
+   "correct": true
+  },
+  {
+   "compound": "Toluene",
+   "pred_A": 0.021,
+   "called": "A!=0",
+   "truth": "A=0",
+   "correct": false,
+   "dlogk_consequence": {
+    "phi=0.3": -0.0066,
+    "phi=0.5": -0.0058
+   }
+  },
+  {
+   "compound": "Naphthalene",
+   "pred_A": 0.022,
+   "called": "A!=0",
+   "truth": "A=0",
+   "correct": false,
+   "dlogk_consequence": {
+    "phi=0.3": -0.0071,
+    "phi=0.5": -0.0063
+   }
+  },
+  {
+   "compound": "Benzoic acid",
+   "pred_A": 0.677,
+   "called": "A!=0",
+   "truth": "A!=0",
+   "correct": true
+  },
+  {
+   "compound": "Ibuprofen",
+   "pred_A": 0.659,
+   "called": "A!=0",
+   "truth": "A!=0",
+   "correct": true
+  },
+  {
+   "compound": "Naproxen",
+   "pred_A": 0.6,
+   "called": "A!=0",
+   "truth": "A!=0",
+   "correct": true
+  },
+  {
+   "compound": "Ketoprofen",
+   "pred_A": 0.626,
+   "called": "A!=0",
+   "truth": "A!=0",
+   "correct": true
+  },
+  {
+   "compound": "Lidocaine",
+   "pred_A": 0.129,
+   "called": "A!=0",
+   "truth": "A!=0",
+   "correct": true
+  },
+  {
+   "compound": "Propranolol",
+   "pred_A": 0.384,
+   "called": "A!=0",
+   "truth": "A!=0",
+   "correct": true
+  },
+  {
+   "compound": "Atenolol",
+   "pred_A": 0.682,
+   "called": "A!=0",
+   "truth": "A!=0",
+   "correct": true
+  },
+  {
+   "compound": "Imipramine",
+   "pred_A": 0.011,
+   "called": "A!=0",
+   "truth": "A=0",
+   "correct": false,
+   "dlogk_consequence": {
+    "phi=0.3": -0.0036,
+    "phi=0.5": -0.0032
+   }
+  },
+  {
+   "compound": "4-Aminobenzoic acid",
+   "pred_A": 1.009,
+   "called": "A!=0",
+   "truth": "A!=0",
+   "correct": true
+  }
+ ],
+ "refused": [
+  "Benzyltrimethylammonium"
+ ]
+}

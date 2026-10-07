@@ -1,0 +1,93 @@
+compounds matched: 94   SoluteDB labels available: 94   weak bases: 15
+membership tiers: {'exact': 93, 'skeleton': 1}
+unmasked fits: 332   modifiers: {'tetrahydrofuran', 'acetonitrile', 'methanol'}
+
+==============================================================================
+1. MODEL BIAS -- stock SoluteML ensemble mean vs WSU measured
+==============================================================================
+  bias E: 0.03506 [0.003575, 0.06508] (compound-level bootstrap, n=94 compounds); axis=descriptor space (condition-independent); baseline=zero (unbiased) vs baseline 0; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+   MAE E: 0.1062 [0.08639, 0.13] (compound-level bootstrap, n=94 compounds); axis=descriptor space (condition-independent); baseline=Chung 2022 SoluteML random-split MAE vs SoluteDB (self-reported) vs baseline 0.041; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+  RMSE E: 0.1535 [0.1151, 0.1946] (compound-level bootstrap, n=94 compounds); axis=descriptor space (condition-independent); baseline=Chung 2022 SoluteML substructure-split MAE vs SoluteDB vs baseline 0.084; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+
+  bias S: 0.06067 [0.02675, 0.09668] (compound-level bootstrap, n=94 compounds); axis=descriptor space (condition-independent); baseline=zero (unbiased) vs baseline 0; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+   MAE S: 0.1076 [0.07868, 0.1408] (compound-level bootstrap, n=94 compounds); axis=descriptor space (condition-independent); baseline=Chung 2022 SoluteML random-split MAE vs SoluteDB (self-reported) vs baseline 0.098; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+  RMSE S: 0.1858 [0.1134, 0.2579] (compound-level bootstrap, n=94 compounds); axis=descriptor space (condition-independent); baseline=Chung 2022 SoluteML substructure-split MAE vs SoluteDB vs baseline 0.17; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+
+  bias A: -0.004209 [-0.01979, 0.01091] (compound-level bootstrap, n=94 compounds); axis=descriptor space (condition-independent); baseline=zero (unbiased) vs baseline 0; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+   MAE A: 0.05376 [0.04209, 0.06643] (compound-level bootstrap, n=94 compounds); axis=descriptor space (condition-independent); baseline=Chung 2022 SoluteML random-split MAE vs SoluteDB (self-reported) vs baseline 0.038; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+  RMSE A: 0.07976 [0.06061, 0.09657] (compound-level bootstrap, n=94 compounds); axis=descriptor space (condition-independent); baseline=Chung 2022 SoluteML substructure-split MAE vs SoluteDB vs baseline 0.067; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+
+  bias B: 0.01758 [0.006037, 0.03083] (compound-level bootstrap, n=94 compounds); axis=descriptor space (condition-independent); baseline=zero (unbiased) vs baseline 0; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+   MAE B: 0.03971 [0.03092, 0.051] (compound-level bootstrap, n=94 compounds); axis=descriptor space (condition-independent); baseline=Chung 2022 SoluteML random-split MAE vs SoluteDB (self-reported) vs baseline 0.047; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+  RMSE B: 0.06285 [0.04112, 0.08552] (compound-level bootstrap, n=94 compounds); axis=descriptor space (condition-independent); baseline=Chung 2022 SoluteML substructure-split MAE vs SoluteDB vs baseline 0.088; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+
+==============================================================================
+2. RESIDUAL DISTRIBUTION (model - measured), n = 94 compounds
+==============================================================================
+desc      p0      p5     p25     p50     p75     p95    p100      sd   skew  |e|>2sd
+   E  -0.703  -0.202  +0.016  +0.047  +0.081  +0.239  +0.480   0.150  -1.19        6
+   S  -0.679  -0.094  +0.014  +0.045  +0.108  +0.294  +1.113   0.177  +1.25        3
+   A  -0.271  -0.159  -0.034  +0.021  +0.026  +0.088  +0.218   0.080  -0.97        7
+   B  -0.229  -0.064  -0.005  +0.017  +0.041  +0.079  +0.346   0.061  +0.99        4
+
+  worst 5 compounds per descriptor (signed error):
+    E: Pentafluorophenol -0.703, 8-Hydroxyquinoline +0.480, 2-Aminobiphenyl +0.448, 2-Naphthaldehyde -0.394, 4-Methylaniline +0.294
+    S: Progesterone +1.113, Benzenesulfonamide -0.679, Nicotinamide -0.532, 4-Nitrophenol +0.390, Pentafluorophenol +0.370
+    A: 3-Bromophenol -0.271, 4-Aminobenzonitrile -0.244, Pentafluorophenol -0.234, 4-Nitrophenol -0.227, 2-Aminobiphenyl +0.218
+    B: Benzenesulfonamide +0.346, Progesterone -0.229, Nicotinamide +0.204, Diphenylamine -0.137, Diphenyl ether -0.096
+
+  proportional-bias check -- OLS residual ~ a + b*measured:
+    E: slope -0.096 [-0.199, -0.007]   <-- interval excludes 0
+    S: slope -0.055 [-0.281, +0.200]
+    A: slope -0.163 [-0.207, -0.109]   <-- interval excludes 0
+    B: slope -0.028 [-0.120, +0.084]
+
+==============================================================================
+3. DECOMPOSITION  model-measured = (label-measured) + (model-label)
+==============================================================================
+desc  model bias  label bias   fit bias  RMS model  RMS label   RMS fit    corr  label share
+   E     +0.0351     -0.0252    +0.0603     0.1535     0.1455    0.0672   +0.11         0.92
+   S     +0.0607     +0.0235    +0.0372     0.1858     0.1892    0.0604   -0.37         1.14
+   A     -0.0042     -0.0317    +0.0275     0.0798     0.0919    0.0393   -0.39         1.17
+   B     +0.0176     -0.0098    +0.0274     0.0629     0.0645    0.0336   -0.32         1.12
+  label bias E: -0.02521 [-0.05579, 0.004139] (compound-level bootstrap, n=94 compounds); axis=SoluteDB corpus labels vs WSU measurement; baseline=zero (corpus agrees with measurement) vs baseline 0; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+  label bias S: 0.02346 [-0.01346, 0.0601] (compound-level bootstrap, n=94 compounds); axis=SoluteDB corpus labels vs WSU measurement; baseline=zero (corpus agrees with measurement) vs baseline 0; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+  label bias A: -0.03166 [-0.04945, -0.01477] (compound-level bootstrap, n=94 compounds); axis=SoluteDB corpus labels vs WSU measurement; baseline=zero (corpus agrees with measurement) vs baseline 0; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+  label bias B: -0.00984 [-0.02182, 0.004055] (compound-level bootstrap, n=94 compounds); axis=SoluteDB corpus labels vs WSU measurement; baseline=zero (corpus agrees with measurement) vs baseline 0; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+
+==============================================================================
+4. RETENTION SPACE (#41 criterion) -- descriptors through fixed constants
+==============================================================================
+  mean per-compound RMSE(log k): 0.0845 log k [0.07213, 0.09803] (compound-level bootstrap, n=94 compounds); axis=332 unmasked WSU (column x modifier x phi) fits, 10-90% v/v; baseline=Poole 2019 harmonised-descriptor median LSER residual SD (MeOH) vs baseline 0.041 log k; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+  mean per-compound bias(log k): -0.0507 log k [-0.06561, -0.03584] (compound-level bootstrap, n=94 compounds); axis=332 unmasked WSU (column x modifier x phi) fits, 10-90% v/v; baseline=zero (unbiased) vs baseline 0 log k; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+
+  per-compound RMSE(log k) quantiles: p0=0.010 p5=0.019 p25=0.041 p50=0.068 p75=0.109 p95=0.188 p100=0.387
+  worst 5: Pentafluorophenol 0.387, Progesterone 0.289, Benzenesulfonamide 0.283, Nicotinamide 0.237, Diphenylamine 0.194
+
+  by modifier (all compound x fit cells):
+      modifier   cells  model RMSE  label RMSE  model bias  Poole SD
+  acetonitrile   14382       0.093       0.085      -0.046     0.030
+      methanol   15698       0.117       0.110      -0.055     0.041
+tetrahydrofuran    1128       0.093       0.085      -0.040       nan
+
+  by S-2 class -- the anchor's own split (neutral vs weak base):
+       class    n     bias E     bias S     bias A     bias B  ret RMSE  ret bias
+     neutral   79    +0.0109    +0.0646    -0.0109    +0.0231     0.087    -0.063
+   weak base   15    +0.1624    +0.0399    +0.0308    -0.0113     0.073    +0.017
+    E: weak-base minus neutral bias +0.1515 [+0.0770, +0.2360] (n=15 vs 79)   <-- interval excludes 0
+    S: weak-base minus neutral bias -0.0247 [-0.0749, +0.0286] (n=15 vs 79)
+    A: weak-base minus neutral bias +0.0416 [+0.0067, +0.0821] (n=15 vs 79)   <-- interval excludes 0
+    B: weak-base minus neutral bias -0.0343 [-0.0647, -0.0052] (n=15 vs 79)   <-- interval excludes 0
+
+==============================================================================
+5. ENSEMBLE UNDER-DISPERSION -- retention RMSE / propagated ensemble SD
+==============================================================================
+  median ratio: 1.231 [0.9825, 1.472] (compound-level bootstrap, n=94 compounds); axis=332 unmasked WSU (column x modifier x phi) fits, 10-90% v/v; baseline=1.0 (ensemble spread matches its own error) vs baseline 1; accurate to WSU-2019 Table S-2 measured descriptors (94 neutral solutes, median V 1.06, no acids by name; 94/94 inside SoluteDB)
+  quantiles: p0=0.20 p5=0.36 p25=0.71 p50=1.23 p75=1.66 p95=2.92 p100=5.09
+  descriptor-space, per descriptor (RMSE / median ensemble SD):
+    E: RMSE 0.154 / ens SD 0.039 = 3.95
+    S: RMSE 0.186 / ens SD 0.050 = 3.70
+    A: RMSE 0.080 / ens SD 0.021 = 3.85
+    B: RMSE 0.063 / ens SD 0.029 = 2.15
+
+wrote residuals.csv (94 compounds)
