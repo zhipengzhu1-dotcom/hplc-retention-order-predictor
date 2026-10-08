@@ -137,6 +137,19 @@ Python 3.13:
 `model/columns.py` and most scripts under `prototype/` and `experiments/` also need the
 WSU-2019 tables rebuilt locally.
 
+## Prototype view: the resolution map
+
+[`prototype/resolution-map.html`](prototype/resolution-map.html) is a throwaway mock-up of
+how a resolution map could show confidence. Open it in a browser; it needs no server. Three
+variants (point-estimate Rs, critical-pair territory, and probability) are switched with the
+arrow keys or `?variant=A|B|C`.
+
+**The data is synthetic.** The page uses 8 invented compounds and no model from this
+repository. Its gradient-time axis is a display experiment; the model itself is isocratic
+only (see [Limitations](#limitations)).
+
+![Prototype view with synthetic data: variant C of the resolution-map mock-up, colouring gradient time against pH by the probability that every adjacent pair reaches the target Rs, with hatching where model uncertainty is high](docs/screenshots/resolution-map-prototype.png)
+
 ## Repository layout
 
 | Path | Contents |
